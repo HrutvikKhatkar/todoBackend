@@ -9,7 +9,7 @@ const {open} = require('sqlite')
 const sqlite3 = require('sqlite3')
 
 const path = require('path')
-const dbPath = path.join(__dirname, 'todoApplication.db')
+const dbPath = path.join(__dirname, 'myData.db')
 
 let db = null
 
@@ -357,6 +357,24 @@ app.delete('/todos/:todoId/', async (request, response) => {
 
   await db.run(deleteTodoQuery)
   response.send('Todo Deleted')
+})
+
+app.get('/login/', async (request, response) => {
+  const selectDuaDateQuery = `
+        SELECT
+            *
+        FROM 
+            user
+        ;`
+
+  const todosArray = await db.all(selectDuaDateQuery)
+
+  if (todosArray === undefined) {
+    response.status(400)
+    response.send('Invalid Due Date')
+  } else {
+    response.send(todosArray)
+  }
 })
 
 module.exports = app
